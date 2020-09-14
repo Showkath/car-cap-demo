@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+  <edmx:Reference Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Capabilities.V1.xml">
+    <edmx:Include Alias="Capabilities" Namespace="Org.OData.Capabilities.V1"/>
+  </edmx:Reference>
+  <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/Common.xml">
+    <edmx:Include Alias="Common" Namespace="com.sap.vocabularies.Common.v1"/>
+  </edmx:Reference>
+  <edmx:Reference Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Core.V1.xml">
+    <edmx:Include Alias="Core" Namespace="Org.OData.Core.V1"/>
+  </edmx:Reference>
+  <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/UI.xml">
+    <edmx:Include Alias="UI" Namespace="com.sap.vocabularies.UI.v1"/>
+  </edmx:Reference>
+  <edmx:DataServices>
+    <Schema Namespace="CarService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+      <EntityContainer Name="EntityContainer">
+        <EntitySet Name="CarBrandInfo" EntityType="CarService.CarBrandInfo">
+          <NavigationPropertyBinding Path="cars" Target="CarInfo"/>
+          <NavigationPropertyBinding Path="carBrandFav" Target="CarFavourites"/>
+        </EntitySet>
+        <EntitySet Name="CarFavourites" EntityType="CarService.CarFavourites">
+          <NavigationPropertyBinding Path="favouriteCarBrand" Target="CarBrandInfo"/>
+          <NavigationPropertyBinding Path="favouriteCar" Target="CarInfo"/>
+        </EntitySet>
+        <EntitySet Name="CarInfo" EntityType="CarService.CarInfo">
+          <NavigationPropertyBinding Path="carBrand" Target="CarBrandInfo"/>
+          <NavigationPropertyBinding Path="favouriteCars" Target="CarFavourites"/>
+        </EntitySet>
+      </EntityContainer>
+      <EntityType Name="CarBrandInfo">
+        <Key>
+          <PropertyRef Name="ID"/>
+        </Key>
+        <Property Name="createdAt" Type="Edm.DateTimeOffset" Precision="7"/>
+        <Property Name="createdBy" Type="Edm.String" MaxLength="255"/>
+        <Property Name="modifiedAt" Type="Edm.DateTimeOffset" Precision="7"/>
+        <Property Name="modifiedBy" Type="Edm.String" MaxLength="255"/>
+        <Property Name="ID" Type="Edm.String" MaxLength="1111" Nullable="false"/>
+        <Property Name="descr" Type="Edm.String" MaxLength="1111"/>
+        <NavigationProperty Name="cars" Type="Collection(CarService.CarInfo)" Partner="carBrand"/>
+        <NavigationProperty Name="carBrandFav" Type="Collection(CarService.CarFavourites)" Partner="favouriteCarBrand"/>
+      </EntityType>
+      <EntityType Name="CarFavourites">
+        <Key>
+          <PropertyRef Name="favkeyId"/>
+        </Key>
+        <Property Name="favkeyId" Type="Edm.Int32" Nullable="false"/>
+        <Property Name="userId" Type="Edm.String" MaxLength="1111"/>
+        <NavigationProperty Name="favouriteCarBrand" Type="CarService.CarBrandInfo" Partner="carBrandFav">
+          <ReferentialConstraint Property="favouriteCarBrand_ID" ReferencedProperty="ID"/>
+        </NavigationProperty>
+        <NavigationProperty Name="favouriteCar" Type="CarService.CarInfo" Partner="favouriteCars">
+          <ReferentialConstraint Property="favouriteCar_ID" ReferencedProperty="ID"/>
+        </NavigationProperty>
+        <Property Name="isLiked" Type="Edm.Boolean"/>
+        <Property Name="favBrand" Type="Edm.String" MaxLength="1111"/>
+        <Property Name="favCar" Type="Edm.String" MaxLength="1111"/>
+        <Property Name="favouriteCarBrand_ID" Type="Edm.String" MaxLength="1111"/>
+        <Property Name="favouriteCar_ID" Type="Edm.String" MaxLength="1111"/>
+      </EntityType>
+      <EntityType Name="CarInfo">
+        <Key>
+          <PropertyRef Name="ID"/>
+        </Key>
+        <Property Name="ID" Type="Edm.String" MaxLength="1111" Nullable="false"/>
+        <Property Name="descr" Type="Edm.String" MaxLength="1111"/>
+        <Property Name="stock" Type="Edm.Int32"/>
+        <Property Name="discount" Type="Edm.Boolean"/>
+        <NavigationProperty Name="carBrand" Type="CarService.CarBrandInfo" Partner="cars">
+          <ReferentialConstraint Property="carBrand_ID" ReferencedProperty="ID"/>
+        </NavigationProperty>
+        <NavigationProperty Name="favouriteCars" Type="Collection(CarService.CarFavourites)" Partner="favouriteCar"/>
+        <Property Name="carBrandInfoId" Type="Edm.String" MaxLength="1111"/>
+        <Property Name="carBrand_ID" Type="Edm.String" MaxLength="1111"/>
+      </EntityType>
+      <Annotations Target="CarService.CarBrandInfo/createdAt">
+        <Annotation Term="Common.Label" String="Utworzono dnia"/>
+        <Annotation Term="Core.Computed" Bool="true"/>
+        <Annotation Term="Core.Immutable" Bool="true"/>
+        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+      </Annotations>
+      <Annotations Target="CarService.CarBrandInfo/createdBy">
+        <Annotation Term="Common.Label" String="Utworzone przez"/>
+        <Annotation Term="Core.Computed" Bool="true"/>
+        <Annotation Term="Core.Description" String="Unikalny identyfikator użytkownika"/>
+        <Annotation Term="Core.Immutable" Bool="true"/>
+        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+      </Annotations>
+      <Annotations Target="CarService.CarBrandInfo/modifiedAt">
+        <Annotation Term="Common.Label" String="Zmieniono dnia"/>
+        <Annotation Term="Core.Computed" Bool="true"/>
+        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+      </Annotations>
+      <Annotations Target="CarService.CarBrandInfo/modifiedBy">
+        <Annotation Term="Common.Label" String="Zmienione przez"/>
+        <Annotation Term="Core.Computed" Bool="true"/>
+        <Annotation Term="Core.Description" String="Unikalny identyfikator użytkownika"/>
+        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+      </Annotations>
+      <Annotations Target="CarService.EntityContainer/CarInfo">
+        <Annotation Term="Capabilities.DeleteRestrictions">
+          <Record Type="Capabilities.DeleteRestrictionsType">
+            <PropertyValue Property="Deletable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Capabilities.InsertRestrictions">
+          <Record Type="Capabilities.InsertRestrictionsType">
+            <PropertyValue Property="Insertable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Capabilities.UpdateRestrictions">
+          <Record Type="Capabilities.UpdateRestrictionsType">
+            <PropertyValue Property="Updatable" Bool="false"/>
+          </Record>
+        </Annotation>
+      </Annotations>
+    </Schema>
+  </edmx:DataServices>
+</edmx:Edmx>
